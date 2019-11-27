@@ -1,0 +1,101 @@
+.data=hospitalcosts
+str(hospitalcosts)
+summary(hospitalcosts)
+#.............................................
+#1,aQ
+hist(hospitalcosts$AGE,main ="age category of people frequent visit to hospital",xlab = "AGE",border="blue",col="green")
+summary(as.factor(hospitalcosts$AGE))
+#0-1 age category people frewuently visit hospital
+aggregate(.data$TOTCHG~.data$AGE, FUN = sum, data = hospitalcosts)
+max(aggregate(.data$TOTCHG~.data$AGE, FUN = sum, data = hospitalcosts))
+#age category 0 has maximum expenditure
+which.max(summary(as.factor(.data$APRDRG)))
+#............................................................................
+
+
+#1.bQ
+bk<-as.factor(hospitalcosts$APRDRG)
+summary(bk)       
+which.max(summary(bk))
+tapply(hospitalcosts$TOTCHG,bk,sum)
+which.max(tapply(hospitalcosts$TOTCHG,bk,sum))
+max(tapply(hospitalcosts$TOTCHG,bk,sum))
+#640, 437978 has the maximum expinduture cost
+#...........................................................................
+
+
+#2Q
+diaog<-as.factor(hospitalcosts$APRDRG)
+summary(diaog)
+which.max(summary(diaog))
+tapply(hospitalcosts$TOTCHG, diaog,sum)
+max(tapply(hospitalcosts$TOTCHG, diaog,sum))
+which.max(tapply(hospitalcosts$TOTCHG, diaog,sum))
+#entry category 640 has the most expensive treatment
+#.................................................................
+
+
+
+#3Q
+summary(as.factor(hospitalcosts$RACE)) #remove null value
+hospitalcosts<-na.omit(hospitalcosts)
+hospitalcosts
+hospitalcosts$RACE<-as.factor(hospitalcosts$RACE)
+modelannova<-aov(hospitalcosts$TOTCHG~hospitalcosts$RACE, data = hospitalcosts)
+modelannova
+summary(modelannova)
+summary(hospitalcosts$RACE)
+model1<-lm(hospitalcosts$TOTCHG~hospitalcosts$AGE+hospitalcosts$FEMALE, data = hospitalcosts)
+summary(model1)
+
+
+B1<-aggregate(.data$TOTCHG~.data$RACE, FUN = mean, data = hospitalcosts)
+B1
+barplot(as.matrix(B1),main="Race of patients related to hospitalisation costs",xlab = "hos")
+
+
+ra<-as.factor(hospitalcosts$RACE)
+summary(ra)
+hospitalcosts<-na.omit(hospitalcosts)
+hospitalcosts
+modelannova1<-aov(hospitalcosts$TOTCHG~hospitalcosts$RACE)
+summary(modelannova1) #p valu is 94.3%
+#................................................................................
+
+
+
+#4Q
+modellm<-lm(hospitalcosts$TOTCHG~hospitalcosts$AGE+hospitalcosts$FEMALE)
+summary(modellm)
+#or
+summary(hospitalcosts$FEMALE)
+hospitalcosts$RACE<-as.factor(hospitalcosts$RACE)
+model2<-lm(hospitalcosts$TOTCHG~hospitalcosts$AGE+hospitalcosts$FEMALE+hospitalcosts$RACE, data = hospitalcosts)
+summary(model2)
+#age and gender are important factors
+#............................................................................
+
+
+
+#5Q
+modellm2<-lm(hospitalcosts$LOS~hospitalcosts$AGE+hospitalcosts$FEMALE+hospitalcosts$RACE)
+summary(modellm2)
+#less p value and with age, gender, race length of hospital stay cannot be predicted
+#.................................................................................
+
+
+
+
+
+#6Q
+modellm3<-lm(hospitalcosts$TOTCHG~ ., data=hospitalcosts)
+summary(modellm3)
+#rsauare is 54.62
+#age, lengt of stay, APRDRG effet the hospital costs
+#removing insignificant variable to avoid overfitting of model
+modellm33= lm(formula = hospitalcosts$TOTCHG ~ AGE + LOS + APRDRG, data=hospitalcosts)
+summary(modellm33)
+formula(model3)
+#r square is 54.79
+#age length of stay, APRDGR effect the hospital cost
+
